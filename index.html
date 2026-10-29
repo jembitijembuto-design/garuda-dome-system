@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Garuda Dome System (GDS) v3</title>
+    <style>
+      :root {
+        --bg: #07131d;
+        --panel: #0d1d2a;
+        --panel-soft: #12283a;
+        --panel-strong: #0a2335;
+        --line: rgba(148, 163, 184, 0.18);
+        --text: #e5f3ff;
+        --muted: #9db7ca;
+        --accent: #39d0ff;
+        --accent-2: #3ae6c7;
+        --warning: #ffc857;
+        --danger: #ff5d73;
+        --violet: #8d7bff;
+        --success: #79f2b0;
+        --shadow: rgba(0, 0, 0, 0.28);
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        background: linear-gradient(180deg, #061018 0%, #0a1825 100%);
+        color: var(--text);
+        font-family: Inter, "Segoe UI", sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+      }
+
+      .app {
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 22px 18px 40px;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 18px 18px 22px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(15, 29, 39, 0.9);
+        box-shadow: 0 16px 36px var(--shadow);
+        backdrop-filter: blur(8px);
+      }
+
+      .brand-wrap {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .brand-mark {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+        display: grid;
+        place-items: center;
+        color: #032033;
+        font-weight: 900;
+        font-size: 1.2rem;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: clamp(1.1rem, 2vw, 1.7rem);
+      }
+
+      .brand small {
+        color: var(--muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .pill, .button {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255,255,255,0.02);
+        color: var(--text);
+        padding: 8px 14px;
+        font-size: 0.82rem;
+      }
+
+      .button {
+        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+        color: #05263d;
+        font-weight: 800;
+        border: none;
+      }
+
+      .toolbar {
+        margin-top: 18px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .tab {
+        background: rgba(255,255,255,0.02);
+        color: var(--muted);
+        border: 1px solid var(--line);
+        padding: 10px 16px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.2s ease;
+      }
+
+      .tab.active {
+        background: linear-gradient(135deg, rgba(57,208,255,0.18), rgba(58,230,199,0.1));
+        color: var(--text);
+        border-color: rgba(57,208,255,0.4);
+      }
+
+      .dashboard {
+        margin-top: 22px;
+        display: grid;
+        grid-template-columns: 1.55fr 0.95fr;
+        gap: 18px;
+      }
+
+      .panel {
+        background: rgba(12, 25, 34, 0.92);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 20px 30px rgba(0,0,0,0.2);
+      }
+
+      .main-area {
+        display: grid;
+        gap: 18px;
+      }
+
+      .hero {
+        padding: 20px;
+      }
+
+      .hero-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .hero h2 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .subtitle {
+        color: var(--muted);
+      }
+
+      .status-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(121, 242, 176, 0.12);
+        border: 1px solid rgba(121,242,176,0.25);
+        color: var(--success);
+        font-weight: 700;
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 10px rgba(121,242,176,0.8);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .stat {
+        background: linear-gradient(180deg, rgba(18,40,58,0.85), rgba(12,27,37,0.8));
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px 14px;
+      }
+
+      .stat label {
+        color: var(--muted);
+        display: block;
+        font-size: 0.8rem;
+        margin-bottom: 8px;
+      }
+
+      .stat strong {
+        font-size: clamp(1.5rem, 2vw, 2rem);
+      }
+
+      .stat small {
+        display: block;
+        margin-top: 8px;
+        color: var(--muted);
+      }
+
+      .stat .up { color: var(--success); }
+      .stat .down { color: var(--danger); }
+      .stat .warn { color: var(--warning); }
+
+      .two-col {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 18px;
+      }
+
+      .panel-section {
+        padding: 18px 18px 16px;
+      }
+
+      .panel-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .panel-title h3 {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .map-box {
+        border-radius: 16px;
+        height: 330px;
+        position: relative;
+        border: 1px solid var(--line);
+        overflow: hidden;
+        background:
+          linear-gradient(180deg, rgba(9,37,51,0.4), rgba(10,24,38,0.75)),
+          radial-gradient(circle at 30% 10%, rgba(58,230,199,0.18), transparent 22%),
+          linear-gradient(90deg, rgba(57,208,255,0.04), rgba(141,123,255,0.08));
+      }
+
+      .map-grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 28px 28px;
+      }
+
+      .island {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.85;
+        filter: blur(0.1px);
+      }
+
+      .island.kalimantan { left: 24%; top: 21%; width: 110px; height: 110px; background: rgba(122, 223, 136, 0.45); }
+      .island.sumatra { left: 13%; top: 34%; width: 90px; height: 90px; background: rgba(122, 223, 136, 0.42); }
+      .island.java { left: 31%; top: 52%; width: 72px; height: 72px; background: rgba(122, 223, 136, 0.35); }
+      .island.nusa { left: 54%; top: 62%; width: 58px; height: 58px; background: rgba(122, 223, 136, 0.35); }
+      .island.papua { left: 72%; top: 26%; width: 130px; height: 130px; background: rgba(122, 223, 136, 0.46); }
+
+      .geo-node {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--danger);
+        box-shadow: 0 0 16px rgba(255, 93, 115, 0.9);
+      }
+      .geo-node.green { background: var(--success); box-shadow: 0 0 16px rgba(121,242,176,0.8); }
+      .geo-node.warn { background: var(--warning); box-shadow: 0 0 16px rgba(255,200,87,0.8); }
+      .geo-node.violet { background: var(--violet); box-shadow: 0 0 16px rgba(141,123,255,0.9); }
+
+      .node-a { left: 33%; top: 44%; }
+      .node-b { left: 51%; top: 39%; }
+      .node-c { left: 63%; top: 54%; }
+      .node-d { left: 25%; top: 58%; }
+      .node-e { left: 77%; top: 48%; }
+      .node-f { left: 18%; top: 48%; }
+
+      .chart-bars {
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+        height: 170px;
+        padding: 16px 8px 0;
+      }
+
+      .bar-wrap {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .bar {
+        width: 100%;
+        max-width: 28px;
+        min-height: 30px;
+        border-radius: 8px 8px 0 0;
+        background: linear-gradient(180deg, var(--accent) 0%, var(--accent-2) 100%);
+        box-shadow: 0 10px 14px rgba(57,208,255,0.15);
+      }
+
+      .bar.warn { background: linear-gradient(180deg, #ffcc66, #ffd27a); }
+      .bar.danger { background: linear-gradient(180deg, #ff7d8f, #ff5d73); }
+
+      .bar-label {
+        color: var(--muted);
+        font-size: 0.72rem;
+      }
+
+      .alert-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 12px;
+      }
+
+      .alert-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 12px;
+        padding: 12px 10px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--line);
+      }
+
+      .level {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--danger);
+        margin-top: 6px;
+      }
+      .level.warn { background: var(--warning); }
+      .level.good { background: var(--success); }
+
+      .alert-item strong { display: block; margin-bottom: 4px; }
+      .alert-item span { color: var(--muted); font-size: 0.86rem; }
+      .tag {
+        align-self: center;
+        padding: 6px 8px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        border: 1px solid var(--line);
+      }
+      .tag.red { background: rgba(255,93,115,0.12); color: #ffd6dc; }
+      .tag.yellow { background: rgba(255,200,87,0.12); color: #ffe0a6; }
+      .tag.green { background: rgba(121,242,176,0.12); color: #cbf7df; }
+      .tag.blue { background: rgba(57,208,255,0.12); color: #c8f4ff; }
+
+      .sidebar {
+        display: grid;
+        gap: 18px;
+      }
+
+      .mini-panel {
+        padding: 18px;
+      }
+
+      .mini-panel h3 {
+        margin: 0 0 12px;
+      }
+
+      .ring {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 180px;
+        height: 180px;
+        margin: 10px auto 16px;
+        border-radius: 50%;
+        background: conic-gradient(var(--accent) 0 36%, var(--warning) 36% 67%, var(--danger) 67% 84%, var(--violet) 84% 100%);
+        position: relative;
+      }
+
+      .ring::before {
+        content: "";
+        position: absolute;
+        inset: 22px;
+        border-radius: 50%;
+        background: #07131d;
+        border: 1px solid var(--line);
+      }
+
+      .ring-center {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        font-weight: 800;
+      }
+
+      .ring-center strong {
+        font-size: 2rem;
+        display: block;
+      }
+
+      .legend {
+        color: var(--muted);
+        display: grid;
+        gap: 10px;
+        font-size: 0.8rem;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .legend-label { display: flex; align-items: center; gap: 8px; }
+      .swatch {
+        width: 10px; height: 10px; border-radius: 50%;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 10px;
+      }
+
+      .time-item {
+        display: grid;
+        grid-template-columns: 70px 1fr;
+        gap: 12px;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .time-item:last-child { border-bottom: none; }
+
+      .time-item time {
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      .activity {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .pulse {
+        width: 12px; height: 12px; border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 18px rgba(57,208,255,0.8);
+      }
+
+      .hidden { display: none !important; }
+
+      @media (max-width: 1100px) {
+        .dashboard { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 780px) {
+        .stats-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+        .two-col { grid-template-columns: 1fr; }
+        .header { flex-direction: column; align-items: flex-start; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="brand-wrap">
+          <div class="brand-mark">G</div>
+          <div class="brand">
+            <small>National Strategic Intelligence</small>
+            <h1>Garuda Dome System (GDS) v3</h1>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <span class="pill">Indonesia Multi-Domain</span>
+          <span class="pill">Situation: Elevated</span>
+          <button class="button">Ops Center Active</button>
+        </div>
+      </header>
+
+      <nav class="toolbar" id="tabs">
+        <button class="tab active" data-tab="overview">Overview</button>
+        <button class="tab" data-tab="air">Air Defense</button>
+        <button class="tab" data-tab="disaster">Disaster</button>
+        <button class="tab" data-tab="cyber">Cyber / Hoaks</button>
+        <button class="tab" data-tab="karhutla">Karhutla</button>
+        <button class="tab" data-tab="logging">Illegal Logging</button>
+        <button class="tab" data-tab="fishing">Illegal Fishing</button>
+        <button class="tab" data-tab="narcotics">Narcotics</button>
+      </nav>
+
+      <main class="dashboard">
+        <section class="main-area">
+          <div class="panel hero">
+            <div class="hero-head">
+              <div>
+                <h2>Integrated National Security Picture</h2>
+                <div class="subtitle">Cross-domain fusion, predictive early warning, and multi-agency coordination</div>
+              </div>
+              <div class="status-box"><span class="dot"></span> System Ready</div>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat">
+                <label>Threat index</label>
+                <strong>74</strong>
+                <small><span class="up">▲ 8.4%</span> from previous cycle</small>
+              </div>
+              <div class="stat">
+                <label>Active alerts</label>
+                <strong>16</strong>
+                <small><span class="warn">⚑ 4 critical</span></small>
+              </div>
+              <div class="stat">
+                <label>Patrol optimization</label>
+                <strong>91%</strong>
+                <small><span class="up">▲ 12.3%</span> efficiency gain</small>
+              </div>
+              <div class="stat">
+                <label>Data fusion score</label>
+                <strong>97.1</strong>
+                <small><span class="up">▲ 4.2%</span> AI confidence</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="panel panel-section">
+              <div class="panel-title">
+                <h3>National Watch Map</h3>
+                <span class="pill">Multi-Intelligence</span>
+              </div>
+              <div class="map-box">
+                <div class="map-grid"></div>
+                <div class="island sumatra"></div>
+                <div class="island kalimantan"></div>
+                <div class="island java"></div>
+                <div class="island nusa"></div>
+                <div class="island papua"></div>
+                <div class="geo-node green node-a"></div>
+                <div class="geo-node warn node-b"></div>
+                <div class="geo-node violet node-c"></div>
+                <div class="geo-node node-d"></div>
+                <div class="geo-node green node-e"></div>
+                <div class="geo-node warn node-f"></div>
+              </div>
+            </div>
+
+            <div class="panel panel-section">
+              <div class="panel-title">
+                <h3>Mission Priority</h3>
+                <span class="pill">Auto-Ranked</span>
+              </div>
+              <div class="chart-bars">
+                <div class="bar-wrap">
+                  <div class="bar danger" style="height: 92%"></div>
+                  <div class="bar-label">Air</div>
+                </div>
+                <div class="bar-wrap">
+                  <div class="bar warn" style="height: 80%"></div>
+                  <div class="bar-label">Mare</div>
+                </div>
+                <div class="bar-wrap">
+                  <div class="bar danger" style="height: 76%"></div>
+                  <div class="bar-label">Forest</div>
+                </div>
+                <div class="bar-wrap">
+                  <div class="bar" style="height: 68%"></div>
+                  <div class="bar-label">Cyber</div>
+                </div>
+                <div class="bar-wrap">
+                  <div class="bar warn" style="height: 65%"></div>
+                  <div class="bar-label">Disaster</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <div class="panel mini-panel">
+            <h3>Operational Readiness</h3>
+            <div class="ring">
+              <div class="ring-center">
+                <div><strong>84%</strong> readiness</div>
+              </div>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-label"><span class="swatch" style="background: var(--accent)"></span> Air Defense</div>
+                <span>89%</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-label"><span class="swatch" style="background: var(--warning)"></span> Maritime</div>
+                <span>78%</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-label"><span class="swatch" style="background: var(--danger)"></span> Forestry</div>
+                <span>82%</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-label"><span class="swatch" style="background: var(--violet)"></span> Cyber</div>
+                <span>95%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel mini-panel">
+            <h3>Recent Activity</h3>
+            <div class="timeline">
+              <div class="time-item">
+                <time>06:30</time>
+                <div class="activity"><span class="pulse"></span> Detection of unusual flight corridor over eastern Indonesia.</div>
+              </div>
+              <div class="time-item">
+                <time>08:10</time>
+                <div class="activity"><span class="pulse"></span> Suspicious vessel cluster near Natuna detected.</div>
+              </div>
+              <div class="time-item">
+                <time>11:25</time>
+                <div class="activity"><span class="pulse"></span> Hotspot escalation and illegal logging alerts in Kalimantan.</div>
+              </div>
+              <div class="time-item">
+                <time>14:40</time>
+                <div class="activity"><span class="pulse"></span> Disinformation spike linked to regional incident reporting.</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </main>
+
+      <div class="panel panel-section" style="margin-top:18px;">
+        <div class="panel-title">
+          <h3>Priority Alerts</h3>
+          <span class="pill">Correlated Events</span>
+        </div>
+        <ul class="alert-list">
+          <li class="alert-item">
+            <div class="level"></div>
+            <div>
+              <strong>Illegal Logging Escalation – Kalimantan Tengah</strong>
+              <span>Detected forest canopy loss patterns, hotspot anomaly, and suspicious vehicle movement. Risk score 92/100.</span>
+            </div>
+            <span class="tag red">CRITICAL</span>
+          </li>
+          <li class="alert-item">
+            <div class="level warn"></div>
+            <div>
+              <strong>Illegal Fishing Cluster – Natuna</strong>
+              <span>Dark-vessel pattern and AIS spoofing near EEZ boundary. Coordination with Bakamla & KKP recommended.</span>
+            </div>
+            <span class="tag yellow">HIGH</span>
+          </li>
+          <li class="alert-item">
+            <div class="level good"></div>
+            <div>
+              <strong>Disaster Readiness – Sulawesi</strong>
+              <span>Weather model predicts moderate rainfall; early warning team remains ready with local response nodes.</span>
+            </div>
+            <span class="tag green">STABLE</span>
+          </li>
+          <li class="alert-item">
+            <div class="level warn"></div>
+            <div>
+              <strong>Cyber / Hoaks Surge</strong>
+              <span>Disinformation cluster on social media amplified after maritime incident report. Caution operational.</span>
+            </div>
+            <span class="tag blue">WATCH</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+        });
+      });
+    </script>
+  </body>
+</html>
